@@ -15,7 +15,7 @@ or follow the web-links using the [shinyapps.io](http://www.shinyapps.io/) servi
 * https://lampros.shinyapps.io/shiny_geojson/
 * https://lampros.shinyapps.io/shiny_reverse_geocoding/
 
-The latter service is limited to 25 active hours per month for free accounts, thus if the limit is exceeded then the applications won't be available to the end users.
+The latter service is limited to 25 active hours per month (for free accounts), thus if the limit is exceeded then the applications won't be available to the end users.
 
 
 More details / options on how to build / share shiny applications can be found in the following links:
