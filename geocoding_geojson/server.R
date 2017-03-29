@@ -6,7 +6,7 @@ function(input, output) {
 
   output$map <- leaflet::renderLeaflet({
 
-    pnt_obj = geojsonR::read_GeoJson(input$location, flatten_coords = T, average_coordinates = T)
+    pnt_obj = geojsonR::FROM_GeoJson(input$location, flatten_coords = T, average_coordinates = T)
 
     average_coords = pnt_obj$leaflet_view_coords                        # save the geometry-average-coordinates for leaflet
 
