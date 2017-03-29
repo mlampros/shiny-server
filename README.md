@@ -22,4 +22,4 @@ More details / options on how to build / share shiny applications can be found i
 
 
 https://shiny.rstudio.com/tutorial/lesson7/ <br>
-http://deanattali.com/2015/05/09/setup-rstudio-shiny-server-digital-ocean/#custom-domain
+http://deanattali.com/2015/05/09/setup-rstudio-shiny-server-digital-ocean/
