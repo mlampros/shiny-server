@@ -58,9 +58,9 @@ function(input, output, session){
 
                                     input$results_subset, options = leaflet::popupOptions(closeButton = T))
 
-          #--------------------------------------------------------------
-          # magritrr's pipe %>% causes an error when building the package
-          #--------------------------------------------------------------
+          #---------------------------------------------------------------
+          # magritrr's pipe %>% causes an error when building an R package
+          #---------------------------------------------------------------
         }
       })
     }
