@@ -27,5 +27,5 @@ The latter service is limited to 25 active hours per month (for free accounts), 
 More details / options on how to build / share shiny applications can be found in the following links:
 
 
-https://shiny.rstudio.com/tutorial/lesson7/ <br>
+https://shiny.rstudio.com/tutorial/written-tutorial/lesson7/ <br>
 http://deanattali.com/2015/05/09/setup-rstudio-shiny-server-digital-ocean/
