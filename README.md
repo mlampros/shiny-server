@@ -20,8 +20,24 @@ or follow the web-links using the [shinyapps.io](http://www.shinyapps.io/) servi
 * https://lampros.shinyapps.io/shiny_geocoding/
 * https://lampros.shinyapps.io/shiny_geojson/
 * https://lampros.shinyapps.io/shiny_reverse_geocoding/
+* https://lampros.shinyapps.io/string_matching/  [ string matching based on a [fuzzywuzzyR issue](https://github.com/mlampros/fuzzywuzzyR/issues/4) ]
 
-The latter service is limited to 25 active hours per month (for free accounts), thus if the limit is exceeded then the applications won't be available to the end users.
+To deploy a shiny application using *shinyapps.io* first use as working directory the shiny application folder and then run:
+
+```R
+library(rsconnect)
+deployApp()
+
+```
+
+To install an older version of the *rsconnect* package based on a github-commit use:
+
+```R
+devtools::install_github("rstudio/rsconnect", ref='737cd484a501da5589fe49ca3ee43a4b225366af')
+
+```
+
+The *shinyapps.io* service is limited to 25 active hours per month (for free accounts), thus if the limit is exceeded then the applications won't be available to the end users.
 
 
 More details / options on how to build / share shiny applications can be found in the following links:
