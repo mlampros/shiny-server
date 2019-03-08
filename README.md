@@ -42,11 +42,7 @@ The *shinyapps.io* service is limited to 25 active hours per month (for free acc
 
 More details / options on how to build / share shiny applications can be found in the following links:
 
-
-https://shiny.rstudio.com/tutorial/written-tutorial/lesson7/ <br>
-
-http://deanattali.com/2015/05/09/setup-rstudio-shiny-server-digital-ocean/
-
-[An issue related with reticulate-python-shiny application](https://community.rstudio.com/t/problem-deploying-app-using-a-virtual-env-with-reticulate-to-run-python-code-in-app-error-virtual-environment-permission-denied/25283/15)
-
-[shinyapps.io user guide](https://docs.rstudio.com/shinyapps.io/index.html)
+* https://shiny.rstudio.com/tutorial/written-tutorial/lesson7/ <br>
+* http://deanattali.com/2015/05/09/setup-rstudio-shiny-server-digital-ocean/
+* [An issue related with reticulate-python-shiny application](https://community.rstudio.com/t/problem-deploying-app-using-a-virtual-env-with-reticulate-to-run-python-code-in-app-error-virtual-environment-permission-denied/25283/15)
+* [shinyapps.io user guide](https://docs.rstudio.com/shinyapps.io/index.html)
