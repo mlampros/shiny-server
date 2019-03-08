@@ -15,7 +15,15 @@ To open the applications *from inside an R session* use,
 * shiny::runGitHub('shiny-server', 'mlampros', subdir = 'geocoding_nominatim')
 * shiny::runGitHub('shiny-server', 'mlampros', subdir = 'geocoding_nominatim_reverse')
 
-or follow the web-links using the [shinyapps.io](http://www.shinyapps.io/) service,
+**or** download the repository then make one of the applications your working directory and run
+
+```R
+library(shiny)
+runApp()
+
+```
+
+**or** follow the web-links using the [shinyapps.io](http://www.shinyapps.io/) service,
 
 * https://lampros.shinyapps.io/shiny_geocoding/
 * https://lampros.shinyapps.io/shiny_geojson/
@@ -46,5 +54,5 @@ More details / options on how to build / share shiny applications can be found i
 * http://deanattali.com/2015/05/09/setup-rstudio-shiny-server-digital-ocean/
 * [shinyapps.io user guide](https://docs.rstudio.com/shinyapps.io/index.html)
 * https://shiny.rstudio.com/articles/shinyapps.html
-* [rsconnect::setAccountInfo() secret key](https://groups.google.com/forum/#!msg/shiny-discuss/n9Qf6tVyR9Q/AOwQSK--BgAJ)
+* [An issue related with the secret key of the rsconnect::setAccountInfo() function](https://groups.google.com/forum/#!msg/shiny-discuss/n9Qf6tVyR9Q/AOwQSK--BgAJ)
 * [An issue related with reticulate-python-shiny application](https://community.rstudio.com/t/problem-deploying-app-using-a-virtual-env-with-reticulate-to-run-python-code-in-app-error-virtual-environment-permission-denied/25283/15)
