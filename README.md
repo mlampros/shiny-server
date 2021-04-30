@@ -30,6 +30,8 @@ runApp()
 * https://lampros.shinyapps.io/shiny_reverse_geocoding/
 * https://lampros.shinyapps.io/string_matching/  [ string matching based on a [fuzzywuzzyR issue](https://github.com/mlampros/fuzzywuzzyR/issues/4) ]
 
+**IMPORTANT**: In order to make **reticulate**, **R** and **Python** work on *shinyapps.io* see the following [Github repository](https://github.com/ranikay/shiny-reticulate-app) and [this related issue ](https://github.com/rstudio/reticulate/issues/399)
+
 To deploy a shiny application using *shinyapps.io* first use as working directory the shiny application folder and then run:
 
 ```R
@@ -57,3 +59,4 @@ More details / options on how to build / share shiny applications can be found i
 * [An issue related with the secret key of the rsconnect::setAccountInfo() function](https://groups.google.com/forum/#!msg/shiny-discuss/n9Qf6tVyR9Q/AOwQSK--BgAJ)
 * [An issue related with reticulate-python-environment-shiny application](https://community.rstudio.com/t/problem-deploying-app-using-a-virtual-env-with-reticulate-to-run-python-code-in-app-error-virtual-environment-permission-denied/25283/15)
 
+<br>
