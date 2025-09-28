@@ -1,82 +1,101 @@
 
-library(shiny); library(geojsonR)
+library(shiny)
+library(geojsonR)
+library(leaflet)
+library(shinymanager)
+library(scrypt)
 
+# Credentials for authentication
+credentials <- data.frame(
+  user = c("user"),
+  password = c(scrypt::hashPassword("user")),
+  is_hashed_password = TRUE,
+  stringsAsFactors = FALSE
+)
 
-# secondary function for the 'geocoding_nominatim_reverse()' function
-#
-
-reverse_geocoding_nominatim = function(latitude = NULL, longitude = NULL, zoom = 0) {
-
-  if (zoom > 18) {
-
-    cat("the 'zoom' parameter should be a numeric value between 0 and 18", "\n")
-
-    zoom = 0                   # assign a value of 0 to the zoom parameter if it's out of range
+# reverse_geocoding_nominatim function
+reverse_geocoding_nominatim <- function(latitude = NULL, longitude = NULL, zoom = 0) {
+  
+  # Input validation
+  if (is.null(latitude) || is.null(longitude) || 
+      latitude == "" || longitude == "" || 
+      is.na(latitude) || is.na(longitude)) {
+    cat("'latitude' and 'longitude' should be numeric non-NULL values\n")
+    return(data.frame(address = character(0), lat = numeric(0), lon = numeric(0)))
   }
-
-  tmp_lst = list(latitude = latitude, longitude = longitude, zoom = zoom)
-
-  if (is.null(tmp_lst$latitude) || is.null(tmp_lst$longitude) || tmp_lst$latitude == "" || tmp_lst$longitude == "") {                   # errors come mostly from this condition ( input values to shiny are converted to characters -- meaning that a NULL value is equal to "" )
-
-    cat("'latitude' and 'longitude' should be a numeric non-NULL value", "\n")
-
-    tmp_lst$latitude = 0.0          # assign an invalid latitude
-
-    tmp_lst$longitude = 0.0         # assign an invalid longitude
-  }
-
-  tmp_lst_nams = c('lat=', 'lon=', 'zoom=')
-
-  nominatim_query = "http://nominatim.openstreetmap.org/reverse?format=json"
-
-  for (i in 1:length(tmp_lst)) {
-
-    nominatim_query = paste(nominatim_query, paste(tmp_lst_nams[i], tmp_lst[[i]], sep = ""), sep = "&")
-  }
-
-  nominatim_query = paste(nominatim_query, "addressdetails=1", sep = "&")
-
-  con = url(nominatim_query, method = "libcurl")
-
-  tmp_json = suppressWarnings(readLines(con))
-
-  if (tmp_json == "[]" || length(tmp_json) == 0) {               # In case that shiny closes unexpectedly check this condition, probably the resulted "df" is not '[]' or an empty one ( add a condition and use 'print(tmp_json)' to observe the behaviour )
-
-    cat("the nominatim query returns an empty array. Please, modify the initial query", "\n")
-
-    df = data.frame(address = NULL)
-
-    rm(con); gc()}
-
-  else {
-
-    ex = geojsonR::shiny_from_JSON(tmp_json)
-
-    if ('error' %in% names(ex)) {
-
-      cat("Unable to geocode", '\n')
-
-      df = data.frame(address = NULL)
-
-      rm(con); gc()}
-
-    else {
-
-      df = c(ex$display_name, ex$lat, ex$lon)
-
-      df = data.frame(matrix(df, nrow = 1, ncol = length(df)))
-
-      colnames(df) = c('address', 'lat', 'lon')
-
-      df$address = as.character(df$address)
-
-      df$lat = as.numeric(as.character(df$lat))
-
-      df$lon = as.numeric(as.character(df$lon))
-
-      rm(con); gc()
+  
+  # Convert to numeric and validate
+  tryCatch({
+    lat_num <- as.numeric(latitude)
+    lon_num <- as.numeric(longitude)
+    zoom_num <- as.numeric(zoom)
+    
+    # Validate coordinate ranges
+    if (is.na(lat_num) || is.na(lon_num) || 
+        lat_num < -90 || lat_num > 90 || 
+        lon_num < -180 || lon_num > 180) {
+      cat("Invalid latitude (must be -90 to 90) or longitude (must be -180 to 180)\n")
+      return(data.frame(address = character(0), lat = numeric(0), lon = numeric(0)))
     }
-  }
-
-  return(df)
+    
+    # Validate zoom level
+    if (is.na(zoom_num) || zoom_num < 0 || zoom_num > 18) {
+      cat("Zoom parameter should be between 0 and 18, setting to default (10)\n")
+      zoom_num <- 10
+    }
+    
+  }, error = function(e) {
+    cat("Error converting inputs to numeric values:", e$message, "\n")
+    return(data.frame(address = character(0), lat = numeric(0), lon = numeric(0)))
+  })
+  
+  # Build query URL
+  nominatim_query <- sprintf(
+    "http://nominatim.openstreetmap.org/reverse?format=json&lat=%f&lon=%f&zoom=%d&addressdetails=1",
+    lat_num, lon_num, zoom_num
+  )
+  
+  cat("Query URL:", nominatim_query, "\n")
+  
+  # Make API request with proper error handling
+  con <- NULL
+  tryCatch({
+    con <- url(nominatim_query, method = "libcurl")
+    tmp_json <- suppressWarnings(readLines(con))
+    
+    if (length(tmp_json) == 0 || tmp_json == "[]") {
+      cat("The nominatim query returns an empty array.\n")
+      return(data.frame(address = character(0), lat = numeric(0), lon = numeric(0)))
+    }
+    
+    ex <- geojsonR::shiny_from_JSON(tmp_json)
+    
+    if ('error' %in% names(ex)) {
+      cat("Unable to geocode:", ex$error, "\n")
+      return(data.frame(address = character(0), lat = numeric(0), lon = numeric(0)))
+    }
+    
+    # Create result dataframe
+    df <- data.frame(
+      address = as.character(ex$display_name %||% "Unknown location"),
+      lat = as.numeric(ex$lat %||% lat_num),
+      lon = as.numeric(ex$lon %||% lon_num),
+      stringsAsFactors = FALSE
+    )
+    
+    return(df)
+    
+  }, error = function(e) {
+    cat("Error in reverse geocoding:", e$message, "\n")
+    return(data.frame(address = character(0), lat = numeric(0), lon = numeric(0)))
+    
+  }, finally = {
+    if (!is.null(con)) {
+      try(close(con), silent = TRUE)
+    }
+    gc()
+  })
 }
+
+# Helper function for null coalescing
+`%||%` <- function(x, y) if (is.null(x)) y else x

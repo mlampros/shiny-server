@@ -1,19 +1,31 @@
-<br>
-
-<a href="https://www.buymeacoffee.com/VY0x8snyh" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" height="21px" ></a>
 
 <br>
 
-
-### **geocoding shiny applications**
+### **shiny applications**
 
 <br>
 
 To open the applications *from inside an R session* use,
 
-* shiny::runGitHub('shiny-server', 'mlampros', subdir = 'geocoding_geojson')
-* shiny::runGitHub('shiny-server', 'mlampros', subdir = 'geocoding_nominatim')
-* shiny::runGitHub('shiny-server', 'mlampros', subdir = 'geocoding_nominatim_reverse')
+```R
+
+setwd('shiny-server')
+
+shiny::runGitHub('shiny-server', 'mlampros', subdir = 'geocoding_geojson')
+shiny::runGitHub('shiny-server', 'mlampros', subdir = 'geocoding_nominatim')
+shiny::runGitHub('shiny-server', 'mlampros', subdir = 'geocoding_nominatim_reverse')
+shiny::runGitHub('shiny-server', 'mlampros', subdir = 'string_matching')
+
+```
+
+<br>
+
+To access the applications you have to give the following **credentials** as input:
+
+* **username**: user
+* **password**: user
+
+<br>
 
 **or** download the repository then make one of the applications your working directory and run
 

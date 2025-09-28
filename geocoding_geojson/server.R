@@ -1,8 +1,17 @@
 
 library(shiny); library(leaflet); library(geojsonR)
+library(shinymanager)
+library(scrypt)
 
+credentials <- data.frame(user = c("user"),
+                          password = c(scrypt::hashPassword("user")),
+                          is_hashed_password = TRUE,
+                          stringsAsFactors = FALSE)
 
-function(input, output) {
+shiny::shinyServer(function(input, output) {
+  
+  res_auth <- shinymanager::secure_server(
+    check_credentials = shinymanager::check_credentials(credentials)) 
 
   output$map <- leaflet::renderLeaflet({
 
@@ -103,5 +112,5 @@ function(input, output) {
       }
     }
   })
-}
+})
 

@@ -1,6 +1,5 @@
-library(shiny)
 
-shinyUI(fluidPage(
+shinymanager::secure_app(fluidPage(
   
   titlePanel(tags$u(strong(h2("FUZZY LOGIC"),align = "center"))),
   

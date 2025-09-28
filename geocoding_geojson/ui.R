@@ -1,8 +1,7 @@
 
 library(shiny); library(leaflet)
 
-
-fluidPage(
+shinymanager::secure_app(fluidPage(
 
   titlePanel("Geocoding using a geojson file/script, Shiny and Leaflet"),
 
@@ -11,4 +10,4 @@ fluidPage(
   textInput(inputId = "map_provider", label = "map_provider", value = "OpenStreetMap", width = '40%'),                                       # test map_provider using : 'CartoDB.Positron'
 
   leaflet::leafletOutput(outputId = "map", width = "100%", height = 900)
-)
+))

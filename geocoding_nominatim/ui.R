@@ -1,23 +1,27 @@
-
-library(shiny); library(leaflet)
-
-# ui.R
-
-
-fluidPage(
-
+# UI
+shinymanager::secure_app(fluidPage(
   titlePanel("Geocoding using Shiny, Nominatim OSM and Leaflet"),
-
-  textInput(inputId = "streetname", label = "streetname", value = NULL, width = '80%'),
-  textInput(inputId = "housenumber", label = "housenumber", value = NULL, width = '8%'),
-  textInput(inputId = "city", label = "city", value = NULL, width = '50%'),
-  textInput(inputId = "county", label = "county", value = NULL, width = '50%'),
-  textInput(inputId = "state", label = "state", value = NULL, width = '50%'),
-  textInput(inputId = "country", label = "country", value = NULL, width = '50%'),
-  textInput(inputId = "postalcode", label = "postalcode", value = NULL, width = '15%'),
-  textInput(inputId = "map_provider", label = "map_provider", value = "OpenStreetMap", width = '40%'),              # test map_provider using : 'CartoDB.Positron'
-
-  selectInput('results_subset', 'Output Locations', "unknown location", width = '100%'),
-
-  leaflet::leafletOutput(outputId = "map", width = "100%", height = 900)
-)
+  
+  fluidRow(
+    column(6, textInput("streetname", "Street Name", width = '100%')),
+    column(2, textInput("housenumber", "House Number", width = '100%')),
+    column(4, textInput("city", "City", width = '100%'))
+  ),
+  
+  fluidRow(
+    column(4, textInput("county", "County", width = '100%')),
+    column(4, textInput("state", "State", width = '100%')),
+    column(4, textInput("country", "Country", width = '100%'))
+  ),
+  
+  fluidRow(
+    column(4, textInput("postalcode", "Postal Code", width = '100%')),
+    column(4, textInput("map_provider", "Map Provider", value = "OpenStreetMap", width = '100%')),
+    column(4, br(), actionButton("search_btn", "Search Location", class = "btn-primary"))
+  ),
+  
+  br(),
+  selectInput('results_subset', 'Output Locations', choices = "No location searched", width = '100%'),
+  br(),
+  leaflet::leafletOutput("map", width = "100%", height = 600)
+))
