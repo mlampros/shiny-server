@@ -1,6 +1,8 @@
 # UI
-ui <- shinymanager::secure_app(
-  fluidPage(
+# LOGIN (disabled): on Shinylive / GitHub Pages the app runs in the browser, so a login
+# cannot protect anything. Uncomment these lines to use it again on a Shiny server.
+# ui <- shinymanager::secure_app(  # opening of the login wrapper (then remove "ui <- " from the next line)
+ui <- fluidPage(
     titlePanel("Reverse Geocoding using Shiny, Nominatim OSM and Leaflet"),
     
     fluidRow(
@@ -54,4 +56,4 @@ ui <- shinymanager::secure_app(
       )
     )
   )
-)
+# )                              # closing of the login wrapper

@@ -2,13 +2,16 @@
 library(shiny)
 library(leaflet)
 library(geojsonR)
-library(shinymanager)
-library(scrypt)
 
-credentials <- data.frame(user = c("user"),
-                          password = c(scrypt::hashPassword("user")),
-                          is_hashed_password = TRUE,
-                          stringsAsFactors = FALSE)
+# LOGIN (disabled): on Shinylive / GitHub Pages the app runs in the browser, so a login
+# cannot protect anything. Uncomment these lines to use it again on a Shiny server.
+# library(shinymanager)
+# library(scrypt)
+
+# credentials <- data.frame(user = c("user"),
+#                           password = c(scrypt::hashPassword("user")),
+#                           is_hashed_password = TRUE,
+#                           stringsAsFactors = FALSE)
 
 # address_geocoding_nominatim function
 address_geocoding_nominatim <- function(streetname = NULL, housenumber = NULL, city = NULL, 
@@ -23,7 +26,7 @@ address_geocoding_nominatim <- function(streetname = NULL, housenumber = NULL, c
     return(data.frame(display_name = character(0)))
   }
   
-  nominatim_query <- "http://nominatim.openstreetmap.org/search?format=json"
+  nominatim_query <- "https://nominatim.openstreetmap.org/search?format=json"
   
   # Handle street and house number
   STREET <- "&street="
@@ -57,10 +60,8 @@ address_geocoding_nominatim <- function(streetname = NULL, housenumber = NULL, c
   }
   
   # Create connection and handle errors properly
-  con <- NULL
   tryCatch({
-    con <- url(nominatim_query, method = "libcurl")
-    tmp_json <- suppressWarnings(readLines(con))
+    tmp_json <- fetch_url_text(utils::URLencode(nominatim_query))
     
     if (length(tmp_json) == 0 || tmp_json == "[]") {
       cat("The nominatim query returns an empty array. Please modify the query.\n")
@@ -83,10 +84,14 @@ address_geocoding_nominatim <- function(streetname = NULL, housenumber = NULL, c
     cat("Error in geocoding:", e$message, "\n")
     return(data.frame(display_name = character(0)))
     
-  }, finally = {
-    if (!is.null(con)) {
-      try(close(con), silent = TRUE)
-    }
-    gc()
   })
+}
+
+# Download a URL as text. Works both in regular R and in the browser (webR / Shinylive),
+# where base R's download.file() is routed through the browser (the server must allow CORS).
+fetch_url_text <- function(u) {
+  tmp <- tempfile(fileext = ".json")
+  on.exit(unlink(tmp), add = TRUE)
+  utils::download.file(u, tmp, quiet = TRUE, mode = "wb")
+  paste(readLines(tmp, warn = FALSE, encoding = "UTF-8"), collapse = "")
 }

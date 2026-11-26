@@ -1,5 +1,8 @@
 
-shinymanager::secure_app(fluidPage(
+# LOGIN (disabled): on Shinylive / GitHub Pages the app runs in the browser, so a login
+# cannot protect anything. Uncomment these lines to use it again on a Shiny server.
+# shinymanager::secure_app(       # opening of the login wrapper
+fluidPage(
   
   titlePanel(tags$u(strong(h2("FUZZY LOGIC"),align = "center"))),
   
@@ -21,8 +24,9 @@ shinymanager::secure_app(fluidPage(
     mainPanel(
       
       tabsetPanel(
-        tabPanel("String Match",column(12, offset=1,h2=("String Matching"), dataTableOutput("dataOutput")))
+        tabPanel("String Match",column(12, offset=1,h2=("String Matching"), tableOutput("dataOutput")))
       )
     )
   )
-))
+)
+# )                              # closing of the login wrapper

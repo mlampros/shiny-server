@@ -1,21 +1,41 @@
 
 library(shiny); library(leaflet); library(geojsonR)
-library(shinymanager)
-library(scrypt)
 
-credentials <- data.frame(user = c("user"),
-                          password = c(scrypt::hashPassword("user")),
-                          is_hashed_password = TRUE,
-                          stringsAsFactors = FALSE)
+# LOGIN (disabled): on Shinylive / GitHub Pages the app runs in the browser, so a login
+# cannot protect anything. Uncomment these lines to use it again on a Shiny server.
+# library(shinymanager)
+# library(scrypt)
+
+# credentials <- data.frame(user = c("user"),
+#                           password = c(scrypt::hashPassword("user")),
+#                           is_hashed_password = TRUE,
+#                           stringsAsFactors = FALSE)
+
+# Download a URL as text. Works both in regular R and in the browser (webR / Shinylive),
+# where base R's download.file() is routed through the browser (the server must allow CORS).
+fetch_url_text <- function(u) {
+  tmp <- tempfile(fileext = ".json")
+  on.exit(unlink(tmp), add = TRUE)
+  utils::download.file(u, tmp, quiet = TRUE, mode = "wb")
+  paste(readLines(tmp, warn = FALSE, encoding = "UTF-8"), collapse = "")
+}
+
 
 shiny::shinyServer(function(input, output) {
-  
-  res_auth <- shinymanager::secure_server(
-    check_credentials = shinymanager::check_credentials(credentials)) 
+
+  # # LOGIN (disabled): on Shinylive / GitHub Pages the app runs in the browser, so a login
+  # cannot protect anything. Uncomment these lines to use it again on a Shiny server.
+  # res_auth <- shinymanager::secure_server(
+  #   check_credentials = shinymanager::check_credentials(credentials))
 
   output$map <- leaflet::renderLeaflet({
 
-    pnt_obj = geojsonR::FROM_GeoJson(input$location, Flatten_Coords = T, Average_Coordinates = T)
+    geojson_input = trimws(input$location)
+    if (substring(geojson_input, 1, 4) == "http") {                     # download urls here, so that it also works in the browser (Shinylive / webR)
+      geojson_input = fetch_url_text(geojson_input)
+    }
+
+    pnt_obj = geojsonR::FROM_GeoJson(geojson_input, Flatten_Coords = T, Average_Coordinates = T)
 
     average_coords = pnt_obj$leaflet_view_coords                        # save the geometry-average-coordinates for leaflet
 

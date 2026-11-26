@@ -1,11 +1,11 @@
 # Server
 server <- function(input, output, session) {
-  
-  # Authentication
-  res_auth <- shinymanager::secure_server(
-    check_credentials = shinymanager::check_credentials(credentials)
-  )
-  
+
+  # # LOGIN (disabled): on Shinylive / GitHub Pages the app runs in the browser, so a login
+  # cannot protect anything. Uncomment these lines to use it again on a Shiny server.
+  # res_auth <- shinymanager::secure_server(
+  #   check_credentials = shinymanager::check_credentials(credentials))
+
   # Reactive value to store geocoding results
   geocode_results <- reactiveVal(NULL)
   

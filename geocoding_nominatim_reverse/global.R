@@ -2,16 +2,16 @@
 library(shiny)
 library(geojsonR)
 library(leaflet)
-library(shinymanager)
-library(scrypt)
 
-# Credentials for authentication
-credentials <- data.frame(
-  user = c("user"),
-  password = c(scrypt::hashPassword("user")),
-  is_hashed_password = TRUE,
-  stringsAsFactors = FALSE
-)
+# LOGIN (disabled): on Shinylive / GitHub Pages the app runs in the browser, so a login
+# cannot protect anything. Uncomment these lines to use it again on a Shiny server.
+# library(shinymanager)
+# library(scrypt)
+
+# credentials <- data.frame(user = c("user"),
+#                           password = c(scrypt::hashPassword("user")),
+#                           is_hashed_password = TRUE,
+#                           stringsAsFactors = FALSE)
 
 # reverse_geocoding_nominatim function
 reverse_geocoding_nominatim <- function(latitude = NULL, longitude = NULL, zoom = 0) {
@@ -51,17 +51,15 @@ reverse_geocoding_nominatim <- function(latitude = NULL, longitude = NULL, zoom 
   
   # Build query URL
   nominatim_query <- sprintf(
-    "http://nominatim.openstreetmap.org/reverse?format=json&lat=%f&lon=%f&zoom=%d&addressdetails=1",
+    "https://nominatim.openstreetmap.org/reverse?format=json&lat=%f&lon=%f&zoom=%d&addressdetails=1",
     lat_num, lon_num, zoom_num
   )
   
   cat("Query URL:", nominatim_query, "\n")
   
   # Make API request with proper error handling
-  con <- NULL
   tryCatch({
-    con <- url(nominatim_query, method = "libcurl")
-    tmp_json <- suppressWarnings(readLines(con))
+    tmp_json <- fetch_url_text(utils::URLencode(nominatim_query))
     
     if (length(tmp_json) == 0 || tmp_json == "[]") {
       cat("The nominatim query returns an empty array.\n")
@@ -89,13 +87,17 @@ reverse_geocoding_nominatim <- function(latitude = NULL, longitude = NULL, zoom 
     cat("Error in reverse geocoding:", e$message, "\n")
     return(data.frame(address = character(0), lat = numeric(0), lon = numeric(0)))
     
-  }, finally = {
-    if (!is.null(con)) {
-      try(close(con), silent = TRUE)
-    }
-    gc()
   })
 }
 
 # Helper function for null coalescing
 `%||%` <- function(x, y) if (is.null(x)) y else x
+
+# Download a URL as text. Works both in regular R and in the browser (webR / Shinylive),
+# where base R's download.file() is routed through the browser (the server must allow CORS).
+fetch_url_text <- function(u) {
+  tmp <- tempfile(fileext = ".json")
+  on.exit(unlink(tmp), add = TRUE)
+  utils::download.file(u, tmp, quiet = TRUE, mode = "wb")
+  paste(readLines(tmp, warn = FALSE, encoding = "UTF-8"), collapse = "")
+}

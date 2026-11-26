@@ -20,13 +20,6 @@ shiny::runGitHub('shiny-server', 'mlampros', subdir = 'string_matching')
 
 <br>
 
-To access the applications you have to give the following **credentials** as input:
-
-* **username**: user
-* **password**: user
-
-<br>
-
 **or** download the repository then make one of the applications your working directory and run
 
 ```R
@@ -35,40 +28,37 @@ runApp()
 
 ```
 
-**or** follow the web-links using the [shinyapps.io](http://www.shinyapps.io/) service,
+<br>
 
-* https://lampros.shinyapps.io/shiny_geocoding/
-* https://lampros.shinyapps.io/shiny_geojson/
-* https://lampros.shinyapps.io/shiny_reverse_geocoding/
-* https://lampros.shinyapps.io/string_matching/  [ string matching based on a [fuzzywuzzyR issue](https://github.com/mlampros/fuzzywuzzyR/issues/4) ]
+### **Online (Shinylive on GitHub Pages)**
 
-**IMPORTANT**: In order to make **reticulate**, **R** and **Python** work on *shinyapps.io* see the following [Github repository](https://github.com/ranikay/shiny-reticulate-app) and [this related issue ](https://github.com/rstudio/reticulate/issues/399)
+<br>
 
-To deploy a shiny application using *shinyapps.io* first use as working directory the shiny application folder and then run:
+The applications also run in the browser, without a server, using [Shinylive](https://posit-dev.github.io/r-shinylive/) (R compiled to WebAssembly via [webR](https://docs.r-wasm.org/webr/latest/)):
+
+* https://mlampros.github.io/shiny-server/  (all applications)
+* https://mlampros.github.io/shiny-server/geocoding_nominatim/
+* https://mlampros.github.io/shiny-server/geocoding_nominatim_reverse/
+* https://mlampros.github.io/shiny-server/geocoding_geojson/
+* https://mlampros.github.io/shiny-server/string_matching/  [ string matching based on a [fuzzywuzzyR issue](https://github.com/mlampros/fuzzywuzzyR/issues/4) ]
+
+The site is built and deployed by the GitHub Action *.github/workflows/deploy-shinylive.yml* on every push to the *master* branch. The first visit can take some seconds, because webR and the required R packages are downloaded to the browser.
+
+To build the site locally use,
 
 ```R
-library(rsconnect)
-deployApp()
+apps = c("geocoding_nominatim", "geocoding_nominatim_reverse", "geocoding_geojson", "string_matching")
+for (app in apps) shinylive::export(appdir = app, destdir = "_site", subdir = app)
+httpuv::runStaticServer("_site")
 
 ```
 
-To install an older version of the *rsconnect* package based on a github-commit use:
-
-```R
-devtools::install_github("rstudio/rsconnect", ref='737cd484a501da5589fe49ca3ee43a4b225366af')
-
-```
-
-The *shinyapps.io* service is limited to 25 active hours per month (for free accounts), thus if the limit is exceeded then the applications won't be available to the end users.
-
+<br>
 
 More details / options on how to build / share shiny applications can be found in the following links:
 
-* https://shiny.rstudio.com/tutorial/written-tutorial/lesson7/ <br>
+* https://shiny.posit.co/r/getstarted/shiny-basics/lesson7/ <br>
+* https://github.com/posit-dev/r-shinylive <br>
 * http://deanattali.com/2015/05/09/setup-rstudio-shiny-server-digital-ocean/
-* [shinyapps.io user guide](https://docs.rstudio.com/shinyapps.io/index.html)
-* https://shiny.rstudio.com/articles/shinyapps.html
-* [An issue related with the secret key of the rsconnect::setAccountInfo() function](https://groups.google.com/forum/#!msg/shiny-discuss/n9Qf6tVyR9Q/AOwQSK--BgAJ)
-* [An issue related with reticulate-python-environment-shiny application](https://community.rstudio.com/t/problem-deploying-app-using-a-virtual-env-with-reticulate-to-run-python-code-in-app-error-virtual-environment-permission-denied/25283/15)
 
 <br>
